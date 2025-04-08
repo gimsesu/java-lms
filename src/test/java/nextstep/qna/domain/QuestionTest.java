@@ -27,10 +27,20 @@ public class QuestionTest {
     @Test
     @DisplayName("질문 작성자와 로그인 사용자가 같으면 삭제 가능")
     void delete_when_question_owner() throws Exception {
-        question.delete(NsUserTest.JAVAJIGI);
+        List<DeleteHistory> deleteHistories = question.delete(NsUserTest.JAVAJIGI);
 
         assertThat(question.isDeleted()).isTrue();
         assertThat(answer.isDeleted()).isTrue();
+        assertThat(deleteHistories).hasSize(2);
+
+        DeleteHistory questionHistory = deleteHistories.get(0);
+        DeleteHistory answerHistory = deleteHistories.get(1);
+
+        assertThat(questionHistory.getContentType()).isEqualTo(ContentType.QUESTION);
+        assertThat(questionHistory.getContentId()).isEqualTo(question.getId());
+
+        assertThat(answerHistory.getContentType()).isEqualTo(ContentType.ANSWER);
+        assertThat(answerHistory.getContentId()).isEqualTo(answer.getId());
     }
 
     @Test
@@ -45,9 +55,14 @@ public class QuestionTest {
     void delete_when_no_answers() throws Exception {
         Question emptyQuestion = new Question(2L, NsUserTest.JAVAJIGI, "제목", "내용");
 
-        emptyQuestion.delete(NsUserTest.JAVAJIGI);
+        List<DeleteHistory> deleteHistories = emptyQuestion.delete(NsUserTest.JAVAJIGI);
 
         assertThat(emptyQuestion.isDeleted()).isTrue();
+        assertThat(deleteHistories).hasSize(1);
+
+        DeleteHistory questionHistory = deleteHistories.get(0);
+        assertThat(questionHistory.getContentType()).isEqualTo(ContentType.QUESTION);
+        assertThat(questionHistory.getContentId()).isEqualTo(emptyQuestion.getId());
     }
 
     @Test
@@ -59,21 +74,5 @@ public class QuestionTest {
         assertThatThrownBy(() -> question.delete(NsUserTest.JAVAJIGI))
                         .isInstanceOf(CannotDeleteException.class)
                         .hasMessage("다른 사람이 쓴 답변이 있어 삭제할 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("deleteHistories 생성 검증")
-    void createDeleteHistories() {
-        List<DeleteHistory> deleteHistories = question.createDeleteHistories();
-
-        assertThat(deleteHistories).hasSize(2);
-        DeleteHistory questionHistory = deleteHistories.get(0);
-        DeleteHistory answerHistory = deleteHistories.get(1);
-
-        assertThat(questionHistory.getContentType()).isEqualTo(ContentType.QUESTION);
-        assertThat(questionHistory.getContentId()).isEqualTo(question.getId());
-
-        assertThat(answerHistory.getContentType()).isEqualTo(ContentType.ANSWER);
-        assertThat(answerHistory.getContentId()).isEqualTo(answer.getId());
     }
 }

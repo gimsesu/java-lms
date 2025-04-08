@@ -61,7 +61,7 @@ public class Question {
     }
 
     public boolean isNotOwner(NsUser loginUser) {
-        return writer.equals(loginUser);
+        return !writer.equals(loginUser);
     }
 
     public boolean isDeleted() {
@@ -72,10 +72,11 @@ public class Question {
         return this.answers.getAnswers();
     }
 
-    public void delete(NsUser loginUser) throws CannotDeleteException {
+    public List<DeleteHistory> delete(NsUser loginUser) throws CannotDeleteException {
         verifyDeletionPermission(loginUser);
         this.deleted = true;
         answers.deleteAll();
+        return createDeleteHistories();
     }
 
     private void verifyDeletionPermission(NsUser loginUser) throws CannotDeleteException {
@@ -88,7 +89,7 @@ public class Question {
         }
     }
 
-    public List<DeleteHistory> createDeleteHistories() {
+    private List<DeleteHistory> createDeleteHistories() {
         List<DeleteHistory> deleteHistories = new ArrayList<>();
         deleteHistories.add(
                         createDeleteHistory(ContentType.QUESTION, id, writer, LocalDateTime.now()));

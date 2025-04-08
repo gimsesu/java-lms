@@ -25,7 +25,7 @@ public class Answers {
     }
 
     public boolean isNotOwner(NsUser loginUser) {
-        return answers.stream().allMatch(answer -> answer.isNotOwner(loginUser));
+        return answers.stream().anyMatch(answer -> answer.isNotOwner(loginUser));
     }
 
     public void deleteAll() {

@@ -63,23 +63,11 @@ public class AnswersTest {
     }
 
     @Test
-    @DisplayName("모든 답변의 작성자가 같으면 isNotOwner는 true를 반환한다")
-    void isNotOwnerReturnsTrueWhenAllAnswersHaveSameOwner() {
+    @DisplayName("모든 답변의 작성자가 같으면 isNotOwner는 false를 반환한다")
+    void isNotOwnerReturnsFalseWhenAllAnswersHaveSameOwner() {
         Question question = QuestionTest.Q1;
         Answer answer1 = new Answer(1L, NsUserTest.JAVAJIGI, question, "답변1");
         Answer answer2 = new Answer(2L, NsUserTest.JAVAJIGI, question, "답변2");
-        List<Answer> answerList = Arrays.asList(answer1, answer2);
-        Answers answers = new Answers(answerList);
-
-        assertThat(answers.isNotOwner(NsUserTest.JAVAJIGI)).isTrue();
-    }
-
-    @Test
-    @DisplayName("하나라도 다른 작성자가 있으면 isNotOwner는 false를 반환한다")
-    void isNotOwnerReturnsFalseWhenSomeAnswersHaveDifferentOwner() {
-        Question question = QuestionTest.Q1;
-        Answer answer1 = new Answer(1L, NsUserTest.JAVAJIGI, question, "답변1");
-        Answer answer2 = new Answer(2L, NsUserTest.SANJIGI, question, "답변2");
         List<Answer> answerList = Arrays.asList(answer1, answer2);
         Answers answers = new Answers(answerList);
 
@@ -87,11 +75,23 @@ public class AnswersTest {
     }
 
     @Test
-    @DisplayName("답변이 없으면 isNotOwner는 true를 반환한다")
-    void isNotOwnerReturnsTrueWhenNoAnswers() {
-        Answers answers = new Answers();
+    @DisplayName("하나라도 다른 작성자가 있으면 isNotOwner는 true를 반환한다")
+    void isNotOwnerReturnsTrueWhenSomeAnswersHaveDifferentOwner() {
+        Question question = QuestionTest.Q1;
+        Answer answer1 = new Answer(1L, NsUserTest.JAVAJIGI, question, "답변1");
+        Answer answer2 = new Answer(2L, NsUserTest.SANJIGI, question, "답변2");
+        List<Answer> answerList = Arrays.asList(answer1, answer2);
+        Answers answers = new Answers(answerList);
 
         assertThat(answers.isNotOwner(NsUserTest.JAVAJIGI)).isTrue();
+    }
+
+    @Test
+    @DisplayName("답변이 없으면 isNotOwner는 false를 반환한다")
+    void isNotOwnerReturnsFalseWhenNoAnswers() {
+        Answers answers = new Answers();
+
+        assertThat(answers.isNotOwner(NsUserTest.JAVAJIGI)).isFalse();
     }
 
     @Test
