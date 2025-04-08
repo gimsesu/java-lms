@@ -29,6 +29,6 @@ public class Answers {
     }
 
     public void deleteAll() {
-        this.answers.forEach(answer -> answer.setDeleted(true));
+        this.answers.forEach(Answer::delete);
     }
 }
