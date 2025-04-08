@@ -60,7 +60,7 @@ public class Question {
         this.answers.add(answer);
     }
 
-    public boolean isOwner(NsUser loginUser) {
+    public boolean isNotOwner(NsUser loginUser) {
         return writer.equals(loginUser);
     }
 
@@ -79,11 +79,11 @@ public class Question {
     }
 
     private void verifyDeletionPermission(NsUser loginUser) throws CannotDeleteException {
-        if (!isOwner(loginUser)) {
+        if (isNotOwner(loginUser)) {
             throw new CannotDeleteException("질문을 삭제할 권한이 없습니다.");
         }
 
-        if (!answers.isOwner(loginUser)) {
+        if (answers.isNotOwner(loginUser)) {
             throw new CannotDeleteException("다른 사람이 쓴 답변이 있어 삭제할 수 없습니다.");
         }
     }

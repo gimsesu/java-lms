@@ -24,8 +24,8 @@ public class Answers {
         return Collections.unmodifiableList(answers);
     }
 
-    public boolean isOwner(NsUser loginUser) {
-        return answers.stream().allMatch(answer -> answer.isOwner(loginUser));
+    public boolean isNotOwner(NsUser loginUser) {
+        return answers.stream().allMatch(answer -> answer.isNotOwner(loginUser));
     }
 
     public void deleteAll() {
