@@ -23,7 +23,7 @@ public class AnswersTest {
     @Test
     @DisplayName("리스트를 인자로 받는 생성자로 생성 시 해당 리스트로 초기화된다")
     void createWithList() {
-        Question question = QuestionTest.Q1;
+        Question question = new Question(1L, NsUserTest.JAVAJIGI, "title", "contents");
         Answer answer1 = new Answer(1L, NsUserTest.JAVAJIGI, question, "답변1");
         Answer answer2 = new Answer(2L, NsUserTest.JAVAJIGI, question, "답변2");
         List<Answer> answerList = Arrays.asList(answer1, answer2);
@@ -55,7 +55,8 @@ public class AnswersTest {
     @DisplayName("add 메서드로 답변을 추가할 수 있다")
     void addAnswer() {
         Answers answers = new Answers();
-        Answer answer = new Answer(1L, NsUserTest.JAVAJIGI, QuestionTest.Q1, "답변");
+        Question question = new Question(1L, NsUserTest.JAVAJIGI, "title", "contents");
+        Answer answer = new Answer(1L, NsUserTest.JAVAJIGI, question, "답변");
 
         answers.add(answer);
 
@@ -65,7 +66,7 @@ public class AnswersTest {
     @Test
     @DisplayName("모든 답변의 작성자가 같으면 isNotOwner는 false를 반환한다")
     void isNotOwnerReturnsFalseWhenAllAnswersHaveSameOwner() {
-        Question question = QuestionTest.Q1;
+        Question question = new Question(1L, NsUserTest.JAVAJIGI, "title", "contents");
         Answer answer1 = new Answer(1L, NsUserTest.JAVAJIGI, question, "답변1");
         Answer answer2 = new Answer(2L, NsUserTest.JAVAJIGI, question, "답변2");
         List<Answer> answerList = Arrays.asList(answer1, answer2);
@@ -77,7 +78,7 @@ public class AnswersTest {
     @Test
     @DisplayName("하나라도 다른 작성자가 있으면 isNotOwner는 true를 반환한다")
     void isNotOwnerReturnsTrueWhenSomeAnswersHaveDifferentOwner() {
-        Question question = QuestionTest.Q1;
+        Question question = new Question(1L, NsUserTest.JAVAJIGI, "title", "contents");
         Answer answer1 = new Answer(1L, NsUserTest.JAVAJIGI, question, "답변1");
         Answer answer2 = new Answer(2L, NsUserTest.SANJIGI, question, "답변2");
         List<Answer> answerList = Arrays.asList(answer1, answer2);
@@ -95,9 +96,9 @@ public class AnswersTest {
     }
 
     @Test
-    @DisplayName("deleteAll 메서드는 모든 답변을 삭제 상태로 변경한다")
+    @DisplayName("deleteAll 메서드는 모든 답변을 비활성화 상태로 변경한다")
     void deleteAll() {
-        Question question = QuestionTest.Q1;
+        Question question = new Question(1L, NsUserTest.JAVAJIGI, "title", "contents");
         Answer answer1 = new Answer(1L, NsUserTest.JAVAJIGI, question, "답변1");
         Answer answer2 = new Answer(2L, NsUserTest.JAVAJIGI, question, "답변2");
         List<Answer> answerList = Arrays.asList(answer1, answer2);

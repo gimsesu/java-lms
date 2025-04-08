@@ -6,27 +6,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 import nextstep.qna.CannotDeleteException;
 import nextstep.users.domain.NsUserTest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class QuestionTest {
-    public static final Question Q1 = new Question(NsUserTest.JAVAJIGI, "title1", "contents1");
-    public static final Question Q2 = new Question(NsUserTest.SANJIGI, "title2", "contents2");
-
-    private Question question;
-    private Answer answer;
-
-    @BeforeEach
-    void setUp() {
-        question = new Question(1L, NsUserTest.JAVAJIGI, "title", "contents");
-        answer = new Answer(11L, NsUserTest.JAVAJIGI, question, "답변 내용");
-        question.addAnswer(answer);
-    }
-
     @Test
     @DisplayName("질문 작성자와 로그인 사용자가 같으면 삭제 가능")
     void delete_when_question_owner() throws Exception {
+        Question question = new Question(1L, NsUserTest.JAVAJIGI, "title", "contents");
+        Answer answer = new Answer(11L, NsUserTest.JAVAJIGI, question, "답변 내용");
+        question.addAnswer(answer);
+
         List<DeleteHistory> deleteHistories = question.delete(NsUserTest.JAVAJIGI);
 
         assertThat(question.isDeleted()).isTrue();
@@ -46,6 +36,10 @@ public class QuestionTest {
     @Test
     @DisplayName("질문 작성자와 로그인 사용자가 다르면 예외 발생")
     void delete_when_not_question_owner() {
+        Question question = new Question(1L, NsUserTest.JAVAJIGI, "title", "contents");
+        Answer answer = new Answer(11L, NsUserTest.JAVAJIGI, question, "답변 내용");
+        question.addAnswer(answer);
+
         assertThatThrownBy(() -> question.delete(NsUserTest.SANJIGI))
                         .isInstanceOf(CannotDeleteException.class).hasMessage("질문을 삭제할 권한이 없습니다.");
     }
@@ -68,6 +62,9 @@ public class QuestionTest {
     @Test
     @DisplayName("답변 작성자와 로그인 사용자가 다르면 예외 발생")
     void delete_when_different_answer_owner() {
+        Question question = new Question(1L, NsUserTest.JAVAJIGI, "title", "contents");
+        Answer answer = new Answer(11L, NsUserTest.JAVAJIGI, question, "답변 내용");
+        question.addAnswer(answer);
         Answer differentOwnerAnswer = new Answer(12L, NsUserTest.SANJIGI, question, "다른 사람의 답변");
         question.addAnswer(differentOwnerAnswer);
 
