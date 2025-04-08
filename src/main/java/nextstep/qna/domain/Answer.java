@@ -21,8 +21,7 @@ public class Answer {
 
     private LocalDateTime updatedDate;
 
-    public Answer() {
-    }
+    public Answer() {}
 
     public Answer(NsUser writer, Question question, String contents) {
         this(null, writer, question, contents);
@@ -30,11 +29,11 @@ public class Answer {
 
     public Answer(Long id, NsUser writer, Question question, String contents) {
         this.id = id;
-        if(writer == null) {
+        if (writer == null) {
             throw new UnAuthorizedException();
         }
 
-        if(question == null) {
+        if (question == null) {
             throw new NotFoundException();
         }
 

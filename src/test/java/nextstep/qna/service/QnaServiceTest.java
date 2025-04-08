@@ -12,47 +12,47 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class QnaServiceTest {
-  private QuestionRepository questionRepository;
-  private DeleteHistoryService deleteHistoryService;
-  private QnAService qnAService;
-  private InMemoryDeleteHistoryRepository deleteHistoryRepository;
+    private QuestionRepository questionRepository;
+    private DeleteHistoryService deleteHistoryService;
+    private QnAService qnAService;
+    private InMemoryDeleteHistoryRepository deleteHistoryRepository;
 
-  private Question question;
-  private Answer answer;
+    private Question question;
+    private Answer answer;
 
-  @BeforeEach
-  public void setUp() throws Exception {
-    question = new Question(1L, NsUserTest.JAVAJIGI, "title1", "contents1");
-    answer = new Answer(11L, NsUserTest.JAVAJIGI, QuestionTest.Q1, "Answers Contents1");
-    question.addAnswer(answer);
+    @BeforeEach
+    public void setUp() throws Exception {
+        question = new Question(1L, NsUserTest.JAVAJIGI, "title1", "contents1");
+        answer = new Answer(11L, NsUserTest.JAVAJIGI, QuestionTest.Q1, "Answers Contents1");
+        question.addAnswer(answer);
 
-    questionRepository = new InMemoryQuestionRepository(question);
-    deleteHistoryRepository = new InMemoryDeleteHistoryRepository();
-    deleteHistoryService = new TestDeleteHistoryService(deleteHistoryRepository);
-    qnAService = new QnAService(questionRepository, deleteHistoryService);
-  }
+        questionRepository = new InMemoryQuestionRepository(question);
+        deleteHistoryRepository = new InMemoryDeleteHistoryRepository();
+        deleteHistoryService = new TestDeleteHistoryService(deleteHistoryRepository);
+        qnAService = new QnAService(questionRepository, deleteHistoryService);
+    }
 
-  @Test
-  @DisplayName("질문 삭제 시 DeleteHistory가 생성되고 저장된다")
-  public void deleteQuestion_SavesDeleteHistories() throws Exception {
-    qnAService.deleteQuestion(NsUserTest.JAVAJIGI, question.getId());
+    @Test
+    @DisplayName("질문 삭제 시 DeleteHistory가 생성되고 저장된다")
+    public void deleteQuestion_SavesDeleteHistories() throws Exception {
+        qnAService.deleteQuestion(NsUserTest.JAVAJIGI, question.getId());
 
-    List<DeleteHistory> deleteHistories = deleteHistoryRepository.findAll();
-    assertThat(deleteHistories).hasSize(2);
+        List<DeleteHistory> deleteHistories = deleteHistoryRepository.findAll();
+        assertThat(deleteHistories).hasSize(2);
 
-    DeleteHistory questionDeleteHistory = deleteHistories.get(0);
-    assertThat(questionDeleteHistory.getContentType()).isEqualTo(ContentType.QUESTION);
-    assertThat(questionDeleteHistory.getContentId()).isEqualTo(question.getId());
+        DeleteHistory questionDeleteHistory = deleteHistories.get(0);
+        assertThat(questionDeleteHistory.getContentType()).isEqualTo(ContentType.QUESTION);
+        assertThat(questionDeleteHistory.getContentId()).isEqualTo(question.getId());
 
-    DeleteHistory answerDeleteHistory = deleteHistories.get(1);
-    assertThat(answerDeleteHistory.getContentType()).isEqualTo(ContentType.ANSWER);
-    assertThat(answerDeleteHistory.getContentId()).isEqualTo(answer.getId());
-  }
+        DeleteHistory answerDeleteHistory = deleteHistories.get(1);
+        assertThat(answerDeleteHistory.getContentType()).isEqualTo(ContentType.ANSWER);
+        assertThat(answerDeleteHistory.getContentId()).isEqualTo(answer.getId());
+    }
 
-  @Test
-  @DisplayName("존재하지 않는 질문을 삭제하려고 하면 NotFoundException이 발생한다")
-  public void deleteQuestion_ThrowsNotFoundException_WhenQuestionNotFound() {
-    assertThatThrownBy(() -> qnAService.deleteQuestion(NsUserTest.JAVAJIGI, 9999L))
-        .isInstanceOf(NotFoundException.class);
-  }
+    @Test
+    @DisplayName("존재하지 않는 질문을 삭제하려고 하면 NotFoundException이 발생한다")
+    public void deleteQuestion_ThrowsNotFoundException_WhenQuestionNotFound() {
+        assertThatThrownBy(() -> qnAService.deleteQuestion(NsUserTest.JAVAJIGI, 9999L))
+                        .isInstanceOf(NotFoundException.class);
+    }
 }
